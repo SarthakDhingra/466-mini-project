@@ -8,7 +8,9 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 import numpy as np
 import pandas as pd
 
+# import models
 from logistic import predict_logistic_regression, optimize_logistic_regression, get_accuracy
+from knn import train_knn
 
 # flags
 debug = False
@@ -67,6 +69,12 @@ def driver(data):
     w, b, alpha = optimize_logistic_regression(data)
     t_hat = predict_logistic_regression(data['X_test'], w, b)
     print(f"Accuracy of logistic regression is {get_accuracy(t_hat, data['y_test'])} with best alpha {alpha}")
+    
+    # knn
+    knn, best_neighbour, best_distance = train_knn(data)
+    t_hat = knn.predict(data['X_test'])
+    print(f"Accuracy of knn is {get_accuracy(t_hat, data['y_test'])} with {best_neighbour} neighbours using {best_distance} distance")
+
     
 
 if __name__ == '__main__':
