@@ -77,9 +77,9 @@ def load_pima():
         print(f'y_test shape = {y_test.shape}')
         print()
     
-    w, b = train_logistic_regression(X_train, y_train)
+    w, b = train_logistic_regression(X_train, y_train, X_validation, y_validation)
     t_hat = predict_logistic_regression(X_test, w, b)
-    print("Accuracy of logistic regression", get_accuracy(t_hat, y_test))
+    print("Accuracy of logistic regression on test set", get_accuracy(t_hat, y_test))
 
 
 
@@ -91,35 +91,42 @@ def binarize(x):
 
 vbinarize = np.vectorize(binarize)
 
-def train_logistic_regression(X, t):
-
+def train_logistic_regression(X_train, t_train, X_validation, t_validation):
+    N_train = X_train.shape[0]
     # initialize things
     epoch = 100
     alpha = 0.001 # learning rate
     b = 0
-    w = np.ones([X.shape[1]])
+    w = np.ones([X_train.shape[1]])
     w_best = w 
     b_best = b
     best_accuracy = 0
+    batch_size   = 10    # batch size
 
     for i in range(epoch):
         # predict 
-        y_hat = predict_logistic_regression(X, w, b)
+        for batch in range( int(np.ceil(N_train/batch_size))):
 
-        # y is the sigmoid
-        z = np.dot(X, w) + b
-        y = 1 / (1 + np.exp(-z))
+            X_batch = X_train[batch*batch_size : (batch+1)*batch_size]
+            t_batch = t_train[batch*batch_size : (batch+1)*batch_size]
 
-        # calculate gradients
-        w_grad = np.dot(X.T, (y-t))
-        b_grad = np.sum(y-t)
+            y_hat = predict_logistic_regression(X_batch, w, b)
+
+            # y is the sigmoid
+            z = np.dot(X_batch, w) + b
+            y = 1 / (1 + np.exp(-z))
+
+            # calculate gradients
+            w_grad = np.dot(X_batch.T, (y-t_batch))
+            b_grad = np.sum(y-t_batch)
+            
+            # updatew weights and bias
+            w = w - alpha*w_grad
+            b = b - alpha*b_grad
         
-        # updatew weights and bias
-        w = w - alpha*w_grad
-        b = b - alpha*b_grad
-
         # keep track of best accuracy, and update best weights and bias if need be
-        current_accuracy = get_accuracy(y_hat, t)
+        y_val_hat = predict_logistic_regression(X_validation, w, b)
+        current_accuracy = get_accuracy(y_val_hat, t_validation)
         # print(f'current_accuracy = {current_accuracy}')
         if current_accuracy < best_accuracy:
             best_accuracy = current_accuracy
@@ -141,8 +148,8 @@ def get_accuracy(t, t_hat):
     """
     Calculate accuracy,
     """
-    print(t.shape)
-    print(t_hat.shape)
+    # print(t.shape)
+    # print(t_hat.shape)
     # confirm
     # t and t_hat should be same size
     correct = np.sum(t == t_hat)
