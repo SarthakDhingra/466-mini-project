@@ -8,12 +8,13 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 import numpy as np
 import pandas as pd
 
-from logistic import predict_logistic_regression, train_logistic_regression, get_accuracy
+from logistic import predict_logistic_regression, optimize_logistic_regression, get_accuracy
 
 # flags
 debug = False
 
-
+#TODO
+# replace 0 values with mean?
 def load_data():
     DF = pd.read_csv('diabetes.csv')
     X = np.asarray(DF.drop('Outcome', 1))
@@ -56,9 +57,16 @@ def load_data():
     return data 
 
 def driver(data):
-    w, b = train_logistic_regression(data)
+
+    # majority guess
+    y_test = data['y_test']
+    majority_guess = (y_test == 0).sum() / len(y_test)
+    print(f"Accuracy of majority guess: {majority_guess}")
+
+    # logistic regression
+    w, b, alpha = optimize_logistic_regression(data)
     t_hat = predict_logistic_regression(data['X_test'], w, b)
-    print("Accuracy of logistic regression on dataset A:", get_accuracy(t_hat, data['y_test']))
+    print(f"Accuracy of logistic regression is {get_accuracy(t_hat, data['y_test'])} with best alpha {alpha}")
     
 
 if __name__ == '__main__':
