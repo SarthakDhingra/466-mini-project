@@ -13,38 +13,45 @@ vbinarize = np.vectorize(binarize)
 # function to train logistic regression
 def train_logistic_regression(data):
 
-    X = data['X_train']
-    t = data['y_train']
+    X_train = data['X_train']
+    t_train = data['y_train']
+    N_train = X_train.shape[0]
 
     # initialize things
     epoch = 100
     alpha = 0.001 # learning rate
     b = 0
-    w = np.ones([X.shape[1]])
+    w = np.ones([X_train.shape[1]])
     w_best = w 
     b_best = b
     best_accuracy = 0
+    batch_size = 10
 
     for i in range(epoch):
-        # predict 
-        y_hat = predict_logistic_regression(X, w, b)
 
-        # y is the sigmoid
-        z = np.dot(X, w) + b
-        y = 1 / (1 + np.exp(-z))
+        for batch in range( int(np.ceil(N_train/batch_size)) ):
 
-        # calculate gradients
-        w_grad = np.dot(X.T, (y-t))
-        b_grad = np.sum(y-t)
-        
-        # updatew weights and bias
-        w = w - alpha*w_grad
-        b = b - alpha*b_grad
+            X_batch = X_train[batch*batch_size : (batch+1)*batch_size]
+            t_batch = t_train[batch*batch_size : (batch+1)*batch_size]
+
+            # predict 
+            y_hat = predict_logistic_regression(X_batch, w, b)
+
+            # y is the sigmoid
+            z = np.dot(X_batch, w) + b
+            y = 1 / (1 + np.exp(-z))
+
+            # calculate gradients
+            w_grad = np.dot(X_batch.T, (y-t_batch))
+            b_grad = np.sum(y-t_batch)
+            
+            # updatew weights and bias
+            w = w - alpha*w_grad
+            b = b - alpha*b_grad
 
         # keep track of best accuracy, and update best weights and bias if need be
-        current_accuracy = get_accuracy(y_hat, t)
-        print(current_accuracy)
-        # print(f'current_accuracy = {current_accuracy}')
+        t_val_hat = predict_logistic_regression(data['X_validation'], w, b)
+        current_accuracy = get_accuracy(t_val_hat, data['y_validation'])
         if current_accuracy > best_accuracy:
             best_accuracy = current_accuracy
             w_best = w 
