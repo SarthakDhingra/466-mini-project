@@ -141,8 +141,8 @@ def get_accuracy(t, t_hat):
     """
     Calculate accuracy,
     """
-    print(t.shape)
-    print(t_hat.shape)
+    # print(t.shape)
+    # print(t_hat.shape)
     # confirm
     # t and t_hat should be same size
     correct = np.sum(t == t_hat)
