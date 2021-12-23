@@ -56,10 +56,10 @@ def load_data():
 
 def driver(data):
 
-    # # # neural network
-    # network, num_nodes, activation, best_validation = train_nn(data)
-    # _, accuracy = network.evaluate(data['X_test'], data['y_test'])
-    # print(f"Accuracy of neural network is {accuracy} using {num_nodes} nodes in the hidden layer and {activation} activation. Validation accuracy was {best_validation}")
+    # neural network
+    network, num_nodes, activation, best_validation = train_nn(data)
+    _, accuracy = network.evaluate(data['X_test'], data['y_test'])
+    print(f"Accuracy of neural network is {accuracy} using {num_nodes} nodes in the hidden layer and {activation} activation. Validation accuracy was {best_validation}")
 
     # logistic regression
     w, b, alpha, validation_accuracy = optimize_logistic_regression(data)
@@ -67,9 +67,9 @@ def driver(data):
     print(f"Accuracy of logistic regression is {get_accuracy(t_hat, data['y_test'])} with best alpha {alpha}. Validation accuracy was {validation_accuracy}")
     
     # # knn
-    # knn, best_neighbour, best_distance, best_validation = train_knn(data)
-    # t_hat = knn.predict(data['X_test'])
-    # print(f"Accuracy of knn is {get_accuracy(t_hat, data['y_test'])} with {best_neighbour} neighbours using {best_distance} distance. Validation accuracy was {best_validation}")
+    knn, best_neighbour, best_distance, best_validation = train_knn(data)
+    t_hat = knn.predict(data['X_test'])
+    print(f"Accuracy of knn is {get_accuracy(t_hat, data['y_test'])} with {best_neighbour} neighbours using {best_distance} distance. Validation accuracy was {best_validation}")
 
     # majority guess
     y_test = data['y_test']

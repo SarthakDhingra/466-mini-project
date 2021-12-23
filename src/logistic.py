@@ -110,6 +110,7 @@ def predict_logistic_regression(X, w, b):
 
     return t_final, t
 
+# from coding assignment 1
 def get_accuracy(t, t_hat):
     """
     Calculate accuracy,
