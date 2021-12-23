@@ -13,7 +13,7 @@ keras
 pandas
 
 ## Layout
-src/main.py is the driver file
-src/knn.py is the K-nearest-neighbours code
-src/logistic.py is the logistic regression code
-src.nn.py is the neural network code
+src/main.py is the driver file <br />
+src/knn.py is the K-nearest-neighbours code <br />
+src/logistic.py is the logistic regression code <br />
+src/nn.py is the neural network code 
